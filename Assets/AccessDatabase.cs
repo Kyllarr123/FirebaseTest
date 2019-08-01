@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Firebase;
 using Firebase.Database;
 using UnityEngine;
-
+using UnityEngine.UI;
 using Firebase.Unity.Editor;
 
 public class AccessDatabase : MonoBehaviour
@@ -14,6 +14,10 @@ public class AccessDatabase : MonoBehaviour
     // Start is called before the first frame update
     Firebase.Auth.FirebaseAuth auth;
     Firebase.Auth.FirebaseUser user;
+    public FirebaseAuth fb;
+    public string playerName;
+    public InputField text;
+    public DatabaseReference reference;
 
 // Handle initialization of the necessary firebase modules:
     public void InitializeFirebase() {
@@ -33,6 +37,7 @@ public class AccessDatabase : MonoBehaviour
             user = auth.CurrentUser;
             if (signedIn) {
                 Debug.Log("Signed in " + user.UserId);
+                
             }
         }
     }
@@ -46,11 +51,20 @@ public class AccessDatabase : MonoBehaviour
     public void RunAthing()
     {
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://test-32217.firebaseio.com/");
-        DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
-        
-        string json = JsonUtility.ToJson(testing);
+        reference = FirebaseDatabase.DefaultInstance.RootReference;
+        playerName = text.text;
+        User newUser = new User(playerName, fb.email);
+        string json = JsonUtility.ToJson(newUser);
 
-        reference.Child("users").Child(user.UserId).SetValueAsync(json);
+        reference.Child("users").Child(user.UserId).SetRawJsonValueAsync(json);
+        Debug.Log("run");
+        
+    }
+    
+    private void WriteNewUser(string userId, string name, string email) {
+        
+        
+        
     }
     
     
